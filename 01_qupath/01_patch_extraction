@@ -1,0 +1,440 @@
+import qupath.lib.images.servers.LabeledImageServer
+
+def imageData = getCurrentImageData()
+
+pathOutputGlob='/path/to/folder/'
+
+// Define output path (here, relative to project)
+def name = GeneralTools.getNameWithoutExtension(imageData.getServer().getMetadata().getName())
+def pathOutput = buildFilePath(pathOutputGlob, name)
+mkdirs(pathOutput)
+
+// Define output path (relative to project)
+def pathOutput1= buildFilePath(pathOutput, 'TUMOR')
+mkdirs(pathOutput1)
+
+// Define output resolution
+double requestedPixelSize = 0.922 // 0.922 = 10x, 0.615 = 15x
+int tile_size = 220 // this is a real tile size for defined requestedPixelSie, not for 40x magnification
+exte = '.jpg'
+int overl = 88 //overlap in px
+int overl_more = 130 // evtl. overlap for low represented classes
+
+// Convert to downsample
+double downsample = requestedPixelSize / imageData.getServer().getPixelCalibration().getAveragedPixelSize()
+
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer1 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('TUMOR', 1)      // Choose output labels (the order matters!)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer1) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput1)     // Write tiles to the specified directory
+
+print 'Done for TUMOR!'
+
+
+
+
+
+// Define output path (relative to project)
+def pathOutput2 = buildFilePath(pathOutput, 'SUB_GL')
+mkdirs(pathOutput2)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer2 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('SUB_GL', 2)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer2) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput2)     // Write tiles to the specified directory
+
+print 'Done for SUB_GL!'
+
+
+
+
+// Define output path (relative to project)
+def pathOutput3 = buildFilePath(pathOutput, 'MUSC_PROP')
+mkdirs(pathOutput3)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer3 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('MUSC_PROP', 3)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer3) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput3)     // Write tiles to the specified directory
+
+print 'Done for MUSC_PROP!'
+
+
+
+
+
+
+// Define output path (relative to project)
+def pathOutput4 = buildFilePath(pathOutput, 'ADVENT')
+mkdirs(pathOutput4)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer4 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('ADVENT', 4)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer4) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput4)     // Write tiles to the specified directory
+
+print 'Done for ADVENT!'
+
+
+
+
+
+// Define output path (relative to project)
+def pathOutput5 = buildFilePath(pathOutput, 'SH_MAG')
+mkdirs(pathOutput5)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer5 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('SH_MAG', 5)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer5) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput5)     // Write tiles to the specified directory
+
+print 'Done for SH_MAG!'
+
+
+
+
+// Define output path (relative to project)
+def pathOutput6 = buildFilePath(pathOutput, 'SH_OES')
+mkdirs(pathOutput6)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer6 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('SH_OES', 6)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer6) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput6)     // Write tiles to the specified directory
+
+print 'Done for SH_OES!'
+
+
+
+
+
+// Define output path (relative to project)
+def pathOutput7 = buildFilePath(pathOutput, 'REGR_TU')
+mkdirs(pathOutput7)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer7 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('REGR_TU', 7)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer7) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput7)     // Write tiles to the specified directory
+
+print 'Done for REGR_TU!'
+
+
+
+
+
+// Define output path (relative to project)
+def pathOutput8 = buildFilePath(pathOutput, 'MUSC_MUC')
+mkdirs(pathOutput8)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer8 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('MUSC_MUC', 8)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer8) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput8)     // Write tiles to the specified directory
+
+print 'Done for MUSC_MUC!'
+
+
+
+
+
+// Define output path (relative to project)
+def pathOutput9 = buildFilePath(pathOutput, 'SUBMUC')
+mkdirs(pathOutput9)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer9 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('SUBMUC', 9)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer9) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput9)     // Write tiles to the specified directory
+
+print 'Done for SUBMUC!'
+
+
+// Define output path (relative to project)
+def pathOutput10 = buildFilePath(pathOutput, 'BARR')
+mkdirs(pathOutput10)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer10 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('BARR', 10)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer10) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput10)     // Write tiles to the specified directory
+
+print 'Done for BARR!'
+
+
+
+
+// Define output path (relative to project)
+def pathOutput11 = buildFilePath(pathOutput, 'BARR_DYSP')
+mkdirs(pathOutput11)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer11 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('BARR_DYSP', 11)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer11) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput11)     // Write tiles to the specified directory
+
+print 'Done for BARR_DYSP!'
+
+
+// Define output path (relative to project)
+def pathOutput12 = buildFilePath(pathOutput, 'LAM_PROP')
+mkdirs(pathOutput12)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer12 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('Lamina propria mucosae', 12)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer12) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput12)     // Write tiles to the specified directory
+
+print 'Done for Lamina propria mucosae!'
+
+
+// Define output path (relative to project)
+def pathOutput13 = buildFilePath(pathOutput, 'LYMPH_NODE')
+mkdirs(pathOutput13)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer13 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('LYMPH_NODE', 13)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer13) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput13)     // Write tiles to the specified directory
+
+print 'Done for LYMPH_NODE!'
+
+
+// Define output path (relative to project)
+def pathOutput14 = buildFilePath(pathOutput, 'ULCUS')
+mkdirs(pathOutput14)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer14 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('ULCUS', 14)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer14) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput14)     // Write tiles to the specified directory
+
+print 'Done for ULCUS!'
+
+
+// Define output path (relative to project)
+def pathOutput15 = buildFilePath(pathOutput, 'MUSC_ZW')
+mkdirs(pathOutput15)
+
+// Create an ImageServer where the pixels are derived from annotations
+def labelServer15 = new LabeledImageServer.Builder(imageData)
+    .backgroundLabel(0, ColorTools.WHITE) // Specify background label (usually 0 or 255)
+    .downsample(downsample)    // Choose server resolution; this should match the resolution at which tiles are exported
+    .addLabel('MUSC_ZW', 15)
+    .multichannelOutput(false)  // If true, each label is a different channel (required for multiclass probability)
+    .build()
+
+// Create an exporter that requests corresponding tiles from the original & labeled image servers
+new TileExporter(imageData)
+    .downsample(downsample)     // Define export resolution
+    .imageExtension(exte)     // Define file extension for original pixels (often .tif, .jpg, '.png' or '.ome.tif')
+    .tileSize(tile_size)              // Define size of each tile, in pixels
+    .labeledServer(labelServer15) // Define the labeled image server to use (i.e. the one we just built)
+    .annotatedTilesOnly(true)  // If true, only export tiles if there is a (labeled) annotation present
+    .overlap(overl_more)                // Define overlap, in pixel units at the export resolution
+    //.includePartialTiles(true)
+    .writeTiles(pathOutput15)     // Write tiles to the specified directory
+
+print 'Done for MUSC_ZW!'
+
+
+print 'ALL CLASSES ARE READY'
+
+
